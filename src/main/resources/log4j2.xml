@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status : 这个用于设置log4j2自身内部的信息输出,可以不设置,当设置成trace时,会看到log4j2内部各种详细输出 monitorInterval 
+	: Log4j能够自动检测修改配置文件和重新配置本身, 设置间隔秒数。 -->
+<configuration status="off" monitorInterval="600">
+	<properties>
+		<property name="LOG_HOME">./logs</property>
+		<!-- 日志备份目录 -->
+		<property name="tyLog">tyLog</property>
+		<property name="customLog">customLog</property>
+		<property name="DeBug">DeBug</property>
+	</properties>
+	<appenders>
+		<!-- 定义控制台输出 --><!-- 控制台只输出level及以上级别的信息(onMatch),其他的直接拒绝(onMismatch) -->
+		<Console name="Console" target="SYSTEM_OUT" follow="true">
+
+			<ThresholdFilter level="info" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<PatternLayout
+				pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+		</Console>
+		<!-- infoAppender输出日志到文件 ${sys:catalina.home} 为 web工程根目录 -->
+		<RollingRandomAccessFile name="file"
+			fileName="${sys:catalina.home}/${LOG_HOME}/${tyLog}.log" filePattern="/${LOG_HOME}/${tyLog}.%d{yyyy-MM-dd-HH}.zip">
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M -- %msg%xEx%n" />
+			<!-- pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] 
+				- %msg%n" /> -->
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="100 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingRandomAccessFile>
+		<!-- error日志格式 -->
+		<RollingRandomAccessFile name="error"
+			immediateFlush="false" fileName="${sys:catalina.home}/${LOG_HOME}/${tyLog}-error.log"
+			filePattern="${LOG_HOME}/${tyLog}-error.log.%d{yyyy-MM-dd}.error.zip">
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M -- %msg%xEx%n" />
+			<Policies>
+				<!-- 每天生成一个 -->
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<!--每个最大500MB -->
+				<SizeBasedTriggeringPolicy size="100 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingRandomAccessFile>
+		<!-- 自定义缓存同步日志 -->
+		<RollingRandomAccessFile name="customLog"
+			fileName="${sys:catalina.home}/${LOG_HOME}/${customLog}-customLog.log" filePattern="${LOG_HOME}/customLog.%d{yyyy-MM-dd-HH}.zip">
+			<PatternLayout
+				pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="100 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20" />
+		</RollingRandomAccessFile>
+	</appenders>
+	<loggers>
+		<!-- 3rdparty Loggers -->
+		<logger name="org.springframework.core" level="info" />
+		<logger name="org.springframework.beans" level="info" />
+		<logger name="org.springframework.context" level="info" />
+		<logger name="org.springframework.web" level="info" />
+		<logger name="org.jboss.netty" level="warn" />
+		<logger name="org.apache.http" level="warn" />
+		<logger name="org.hibernate" level="INFO" />
+		<!-- 自定义 dataSyn logger -->
+		<logger name="custom" level="Info" additivity="false">
+			<appender-ref ref="customLog" />
+		</logger>
+		<!-- info级别的输出到日志 -->
+		<logger name="error" level="Error" additivity="true">
+			<appender-ref ref="error" />
+		</logger>
+		<!-- Root Logger -->
+		<root level="Info" includeLocation="true">
+			<appender-ref ref="Console" />
+			<!--<appender-ref ref="file" />-->
+		</root>
+	</loggers>
+</configuration>  
