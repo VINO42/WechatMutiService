@@ -15,8 +15,8 @@ import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import me.chanjar.weixin.common.exception.WxErrorException;
 
 @RestController
-@RequestMapping("/api/ledong")
-public class LeDongWxPortalController extends AbstractWxPortalController {
+@RequestMapping("/api")
+public class XxWxPortalController extends AbstractWxPortalController {
 	@Autowired
 	private XXWxService xXWxService;
 
