@@ -11,37 +11,40 @@ import java.util.Properties;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.io.FileUtils;
 
+import com.newnew.wechatservice.support.dto.Constant;
+
 /**
  * zk配置文件发布者类
+ * 
  * @author june
  *
  */
 public class ZkConfigPublisher {
-	public static String CONF_DIR = "conf";
-	public static final String CONF_ENCODING = "UTF-8";
-	public static String ZK_CONFIG_ROOTNODE = "/zkSample/conf";
-	public static String ZK_CONF_ENCODING = "UTF-8";
-	public static int ZK_TIMEOUT = 30000;
-	public static String ZK_ADDRESS = "";
+	public static String CONF_DIR = Constant.OUT_CONF_PATH;// 工程外放置进行更新的文件目录
+	public static final String CONF_ENCODING = Constant.CONF_ENCODING;
+	public static String ZK_CONFIG_ROOTNODE = Constant.ZK_CONFIG_ROOTNODE;// 工程内需要进行更新的文件根目录
+
+	public static String ZK_CONF_ENCODING = Constant.ZK_CONF_ENCODING;
+	public static int ZK_TIMEOUT = Constant.ZK_TIMEOUT;
+	public static String ZK_ADDRESS = Constant.ZK_ADDRESS;
 
 	private static final void loadProperties() {
-		InputStream is = ZkConfigPublisher.class
-				.getResourceAsStream("/zkpublisher.properties");
+		InputStream is = ZkConfigPublisher.class.getResourceAsStream(Constant.ZK_CONFIG_PATH);
 		if (is == null) {
 			throw new RuntimeException("找不到zkpublisher.properties资源文件.");
 		}
 		Properties props = new Properties();
 		try {
-			props.load(new BufferedReader(new InputStreamReader(is, "UTF-8")));
+			props.load(new BufferedReader(new InputStreamReader(is, Constant.DEFAULT_ENCODE)));
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		ZK_CONFIG_ROOTNODE = props.getProperty("ZK_CONFIG_ROOTNODE");
-		ZK_CONF_ENCODING = props.getProperty("ZK_CONF_ENCODING");
-		ZK_TIMEOUT = Integer.parseInt(props.getProperty("ZK_TIMEOUT"));
-		ZK_ADDRESS = props.getProperty("ZK_ADDRESS");
+		ZK_CONFIG_ROOTNODE = props.getProperty(Constant.PROP_ZK_CONFIG_ROOTNODE_KEY);
+		ZK_CONF_ENCODING = props.getProperty(Constant.PROP_ZK_CONF_ENCODING_KEY);
+		ZK_TIMEOUT = Integer.parseInt(props.getProperty(Constant.PROP_ZK_TIMEOUT_KEY));
+		ZK_ADDRESS = props.getProperty(Constant.PROP_ZK_ADDRESS_KEY);
 	}
 
 	public static void main(String[] args) {
@@ -59,8 +62,7 @@ public class ZkConfigPublisher {
 		publishConfigs(client, ZK_CONFIG_ROOTNODE, confDir);
 	}
 
-	private static void publishConfigs(ZkClient client, String rootNode,
-			File confDir) {
+	private static void publishConfigs(ZkClient client, String rootNode, File confDir) {
 		File[] confs = confDir.listFiles();
 		int success = 0;
 		int failed = 0;
@@ -73,7 +75,7 @@ public class ZkConfigPublisher {
 			ZkUtils.mkPaths(client, path);
 			String content;
 			try {
-				content = FileUtils.readFileToString(conf, "UTF-8");
+				content = FileUtils.readFileToString(conf, Constant.DEFAULT_ENCODE);
 			} catch (IOException e) {
 				System.err.println("错误: 读取文件内容时遇到异常:" + e.getMessage());
 				failed++;
@@ -88,8 +90,7 @@ public class ZkConfigPublisher {
 					failed++;
 					continue;
 				}
-				System.out.println("提示: 已经成功将配置文件" + conf + "内容发布为新的ZK配置"
-						+ path);
+				System.out.println("提示: 已经成功将配置文件" + conf + "内容发布为新的ZK配置" + path);
 			} else {
 				try {
 					client.writeData(path, content);

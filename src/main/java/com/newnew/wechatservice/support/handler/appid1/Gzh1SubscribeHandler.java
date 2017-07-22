@@ -12,17 +12,17 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 
 @Component
 public class Gzh1SubscribeHandler extends SubscribeHandler {
-  @Autowired
-  private  WxXxConfig wxConfig;
+	@Autowired
+	private WxXxConfig wxConfig;
 
-  @Override
-  protected WxConfig getWxConfig() {
-    return this.wxConfig;
-  }
+	@Override
+	protected WxConfig getWxConfig() {
+		return this.wxConfig;
+	}
 
-  @Override
-  protected WxMpXmlOutMessage handleSpecial(WxMpXmlMessage wxMessage) {
-    return null;
-  }
+	@Override
+	protected WxMpXmlOutMessage handleSpecial(WxMpXmlMessage wxMessage) {
+		return null;
+	}
 
 }

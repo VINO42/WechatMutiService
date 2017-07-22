@@ -11,28 +11,41 @@ import java.util.Properties;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.io.FileUtils;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.newnew.wechatservice.support.dto.Constant;
 
 /**
  * zk配置文件下载类
+ * 
  * @author june
  *
  */
 public class ZkConfigSaver {
-	public static final String CONF_ENCODING = "UTF-8";
-	public static String ZK_CONFIG_ROOTNODE = "/zkSample/conf";
-	public static String ZK_CONF_ENCODING = "UTF-8";
-	public static int ZK_TIMEOUT = 30000;
-	public static String ZK_ADDRESS = "";
+	public static final String CONF_ENCODING = Constant.CONF_ENCODING;
+	private static final int String = 0;
+	public static String ZK_CONFIG_ROOTNODE = Constant.ZK_CONFIG_ROOTNODE;
+	public static String ZK_CONF_ENCODING = Constant.ZK_CONF_ENCODING;
+	public static int ZK_TIMEOUT = Constant.ZK_TIMEOUT;
+	public static String ZK_ADDRESS = Constant.ZK_ADDRESS;
+	private DynamicPropertiesHelperFactory helperFactory;
+
+	public DynamicPropertiesHelperFactory getHelperFactory() {
+		return helperFactory;
+	}
+
+	public void setHelperFactory(DynamicPropertiesHelperFactory helperFactory) {
+		this.helperFactory = helperFactory;
+	}
 
 	private static final void loadProperties() {
-		InputStream is = ZkConfigPublisher.class
-				.getResourceAsStream("/zkpublisher.properties");
+		InputStream is = ZkConfigPublisher.class.getResourceAsStream(Constant.ZK_CONFIG_PATH);
 		if (is == null) {
 			throw new RuntimeException("找不到config.properties资源文件.");
 		}
 		Properties props = new Properties();
 		try {
-			props.load(new BufferedReader(new InputStreamReader(is, "UTF-8")));
+			props.load(new BufferedReader(new InputStreamReader(is, Constant.DEFAULT_ENCODE)));
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
@@ -45,28 +58,44 @@ public class ZkConfigSaver {
 	}
 
 	public static void main(String[] args) {
-//		if ((args == null) || (args.length < 1)) {
-//			throw new RuntimeException("需要指定输出目录名");
-//		}
+		// if ((args == null) || (args.length < 1)) {
+		// throw new RuntimeException("需要指定输出目录名");
+		// }
 		loadProperties();
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring/applicationContext.xml");
 
+		DynamicPropertiesHelperFactory helperFactory = ((DynamicPropertiesHelperFactory) ctx
+				.getBean(DynamicPropertiesHelperFactory.class));
 		ZkClient client = new ZkClient(ZK_ADDRESS, ZK_TIMEOUT);
 		client.setZkSerializer(new ZkUtils.StringSerializer(ZK_CONF_ENCODING));
 
-		File confDir = new File("E:/SourceTree/zkpublisher/zkpublisher/src/main/resources/conf");
+		File confDir = new File(ZK_CONFIG_ROOTNODE);
 		confDir.mkdirs();
 
-		saveConfigs(client, ZK_CONFIG_ROOTNODE, confDir);
+		try {
+			saveConfigs(client, ZK_CONFIG_ROOTNODE, confDir, helperFactory);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	private static void saveConfigs(ZkClient client, String rootNode,
-			File confDir) {
+	private static void saveConfigs(ZkClient client, String rootNode, File confDir,
+			DynamicPropertiesHelperFactory helperFactory) throws IOException {
 		List<String> configs = client.getChildren(rootNode);
 		for (String config : configs) {
-			String content = (String) client.readData(rootNode + "/" + config);
+			String content = (String) client.readData(rootNode + Constant.FORWARD_SLASH + config);
 			File confFile = new File(confDir, config);
 			try {
-				FileUtils.writeStringToFile(confFile, content, "UTF-8");
+				FileUtils.writeStringToFile(confFile, content, Constant.DEFAULT_ENCODE);
+				if (config.equals(Constant.CONF_FILE_NAME)) {
+					DynamicPropertiesHelper helper = helperFactory.getHelper(config);
+					String property = helper.getProperty(Constant.APPID);
+					if (!client.exists(Constant.ZK_TEMP_PATH)) {
+						client.createPersistent(Constant.ZK_TEMP_PATH, true);
+					}
+					client.writeData(Constant.ZK_TEMP_PATH, property);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

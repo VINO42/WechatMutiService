@@ -1,8 +1,6 @@
 package com.newnew.wechatservice.support;
 
 public interface RedisClient {
-	  void disconnect();
-
 	    /**
 	     * 
 	     * @doc:存对象

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.newnew.wechatservice.support.CustomWxMpInRedisConfigStorage;
+import com.newnew.wechatservice.support.WXServiceHandler;
 import com.newnew.wechatservice.support.config.WxConfig;
 import com.newnew.wechatservice.support.handler.AbstractHandler;
 import com.newnew.wechatservice.support.handler.KfSessionHandler;
@@ -32,7 +33,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
  * @author Binary Wang
  *
  */
-public abstract class BaseWxService extends WxMpServiceImpl {
+public abstract class BaseWxService  extends WxMpServiceImpl implements WXServiceHandler {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -47,9 +48,9 @@ public abstract class BaseWxService extends WxMpServiceImpl {
 	@Autowired
 	protected StoreCheckNotifyHandler storeCheckNotifyHandler;
 
-
 	private WxMpMessageRouter router;
-	//zk组装builder 
+
+	// zk组装builder
 	protected abstract WxConfig getServerConfig();
 
 	protected abstract MenuHandler getMenuHandler();
@@ -63,15 +64,16 @@ public abstract class BaseWxService extends WxMpServiceImpl {
 	protected abstract MsgHandler getMsgHandler();
 
 	protected abstract AbstractHandler getScanHandler();
+
 	@Resource
 	CustomWxMpInRedisConfigStorage customWxMpInRedisConfigStorage;
+
 	@PostConstruct
 	public void init() {
 		final WxMpInRedisConfigStorage config = new WxMpInRedisConfigStorage();
-		//redis进行set 
+		// redis进行set
 		config.setAppId(this.getServerConfig().getAppid());// 设置微信公众号的appid
 		config.setSecret(this.getServerConfig().getAppsecret());// 设置微信公众号的app
-																// corpSecret
 		config.setToken(this.getServerConfig().getToken());// 设置微信公众号的token
 		config.setAesKey(this.getServerConfig().getAesKey());// 设置消息加解密密钥
 		super.setWxMpConfigStorage(config);

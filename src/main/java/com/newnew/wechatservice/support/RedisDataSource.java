@@ -8,5 +8,4 @@ public interface RedisDataSource {
 
 	public void returnResource(Jedis jedis);
 
-	public void returnResource(Jedis jedis, boolean broken);
 }

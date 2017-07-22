@@ -43,14 +43,6 @@ public class RedisDataSourceImpl implements RedisDataSource {
 	}
 
 	public void returnResource(Jedis jedis) {
-		jedisPool.returnResource(jedis);
-	}
-
-	public void returnResource(Jedis jedis, boolean broken) {
-		if (broken) {
-			jedisPool.returnBrokenResource(jedis);
-		} else {
-			jedisPool.returnResource(jedis);
-		}
+		jedis.close();
 	}
 }

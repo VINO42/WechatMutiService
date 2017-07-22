@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.newnew.wechatservice.support.service.BaseWxService;
 
+import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 
 public abstract class AbstractWxPortalController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected WxMpService wxService;
 
 	@ResponseBody
 	@GetMapping(produces = "text/plain;charset=utf-8")
@@ -22,7 +24,7 @@ public abstract class AbstractWxPortalController {
 			@RequestParam("nonce") String nonce, @RequestParam("echostr") String echostr) {
 		this.logger.info("\n 接收到来自微信服务器的认证消息：[{},{},{},{}]", signature, timestamp, nonce, echostr);
 
-		if (this.getWxService().checkSignature(timestamp, nonce, signature)) {
+		if (this.wxService.checkSignature(timestamp, nonce, signature)) {
 			return echostr;
 		}
 
@@ -41,7 +43,7 @@ public abstract class AbstractWxPortalController {
 						+ " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
 				signature, encType, msgSignature, timestamp, nonce, requestBody);
 
-		if (!this.getWxService().checkSignature(timestamp, nonce, signature)) {
+		if (!this.wxService.checkSignature(timestamp, nonce, signature)) {
 			throw new IllegalArgumentException(" 非法请求，可能属于伪造的请求！");
 		}
 
@@ -49,7 +51,7 @@ public abstract class AbstractWxPortalController {
 		if (encType == null) {
 			// 明文传输的消息
 			WxMpXmlMessage inMessage = WxMpXmlMessage.fromXml(requestBody);
-			WxMpXmlOutMessage outMessage = this.getWxService().route(inMessage);
+			WxMpXmlOutMessage outMessage = ((BaseWxService) this.wxService).route(inMessage);
 			if (outMessage == null) {
 				return "";
 			}
@@ -57,21 +59,19 @@ public abstract class AbstractWxPortalController {
 		} else if ("aes".equals(encType)) {
 			// aes 加密的消息
 			WxMpXmlMessage inMessage = WxMpXmlMessage.fromEncryptedXml(requestBody,
-					this.getWxService().getWxMpConfigStorage(), timestamp, nonce, msgSignature);
+					this.wxService.getWxMpConfigStorage(), timestamp, nonce, msgSignature);
 			this.logger.debug("\n 消息解密后内容为：\n{} ", inMessage.toString());
-			WxMpXmlOutMessage outMessage = this.getWxService().route(inMessage);
+			WxMpXmlOutMessage outMessage = ((BaseWxService) this.wxService).route(inMessage);
 			if (outMessage == null) {
 				return "";
 			}
 
-			out = outMessage.toEncryptedXml(this.getWxService().getWxMpConfigStorage());
+			out = outMessage.toEncryptedXml(this.wxService.getWxMpConfigStorage());
 		}
 
 		this.logger.debug("\n 组装回复信息：{}", out);
 
 		return out;
 	}
-
-	protected abstract BaseWxService getWxService();
 
 }

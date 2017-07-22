@@ -8,13 +8,12 @@ import com.newnew.wechatservice.support.config.WxXxConfig;
 import com.newnew.wechatservice.support.handler.MenuHandler;
 
 @Component
-public class Gzh1MenuHandler extends MenuHandler {
-  @Autowired
-  private  WxXxConfig wxConfig;
+public class XxMenuHandler extends MenuHandler {
+	@Autowired
+	private WxXxConfig wxConfig;
 
-  @Override
-  protected WxConfig getWxConfig() {
-    return this.wxConfig;
-  }
-
+	@Override
+	protected WxConfig getWxConfig() {
+		return this.wxConfig;
+	}
 }

@@ -8,13 +8,13 @@ import com.newnew.wechatservice.support.config.WxXxConfig;
 import com.newnew.wechatservice.support.handler.LocationHandler;
 
 @Component
-public class Gzh1LocationHandler extends LocationHandler {
-  @Autowired
-  private  WxXxConfig wxConfig;
+public class XxLocationHandler extends LocationHandler {
+	@Autowired
+	private WxXxConfig wxConfig;
 
-  @Override
-  protected WxConfig getWxConfig() {
-    return this.wxConfig;
-  }
+	@Override
+	protected WxConfig getWxConfig() {
+		return this.wxConfig;
+	}
 
 }

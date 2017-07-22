@@ -15,18 +15,12 @@
         http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
-
-	<context:annotation-config />
-
-	<context:component-scan base-package="com.embracesource.config" />
-
 	<bean id="zkPropertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="order" value="1" />
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
-		<property name="location" value="classpath:zkpublisher.properties" />
-	</bean>
-
+	class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="order" value="1" />
+			<property name="ignoreUnresolvablePlaceholders" value="true" />
+			<property name="location" value="classpath:/properties/zkpublisher.properties" />
+		</bean>
 	<bean id="zkSerializer" class="com.newnew.wechatservice.support.zk.ZkUtils.StringSerializer">
 		<constructor-arg value="${ZK_CONF_ENCODING}" />
 	</bean>

@@ -4,7 +4,7 @@
 	<groupId>com.newnet</groupId>
 	<artifactId>WechatMutiService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -17,6 +17,7 @@
 		</dependencies>
 	</dependencyManagement>
 	<properties>
+		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -89,9 +90,12 @@
 					<groupId>org.jboss.netty</groupId>
 					<artifactId>netty</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>com.github.binarywang</groupId>
 			<artifactId>weixin-java-mp</artifactId>
@@ -151,6 +155,13 @@
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
 			<version>3.2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -259,6 +270,11 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 			<version>1.5.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.11.0</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -376,4 +392,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	<modules>
+		<module>?</module>
+	</modules>
 </project>

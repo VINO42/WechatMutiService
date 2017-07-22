@@ -4,38 +4,45 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import redis.clients.jedis.Jedis;
+
 @Component("redisClient")
 public class RedisClientImpl implements RedisClient {
 	@Resource
 	private RedisDataSource redisDataSource;
 
 	@Override
-	public void disconnect() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public String set(byte[] key, Object object, int dbIndex) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object get(byte[] key, int dbIndex) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String set(String key, String value, int dbIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		String result = null;
+
+		Jedis jedis = redisDataSource.getSingleRedisClient();
+		if (jedis == null) {
+			return result;
+		}
+		jedis.select(dbIndex);
+		try {
+			jedis.select(dbIndex);
+			result = jedis.set(key, value);
+		} catch (Exception e) {
+
+		} finally {
+			redisDataSource.returnResource(jedis);
+		}
+		return result;
 	}
 
 	@Override
 	public String set(String key, String value, int dbIndex, int time) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -47,8 +54,22 @@ public class RedisClientImpl implements RedisClient {
 
 	@Override
 	public String get(String key, int dbIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		String result = null;
+
+		Jedis jedis = redisDataSource.getSingleRedisClient();
+		if (jedis == null) {
+			return result;
+		}
+		jedis.select(dbIndex);
+		try {
+			jedis.select(dbIndex);
+			result = jedis.get(key);
+		} catch (Exception e) {
+
+		} finally {
+			redisDataSource.returnResource(jedis);
+		}
+		return result;
 	}
 
 	@Override

@@ -11,9 +11,9 @@ import org.springframework.context.annotation.PropertySource;
  * @date 2017年7月18日 下午8:19:33
  */
 @Configuration
-@PropertySource("classpath:/properties/wx-appid2.properties")
+@PropertySource("classpath:/wx/wx-appid2.properties")
 public class WxXxConfig extends WxConfig {
-	@Value("4{$Pwx_token}")
+	@Value("${wx_token}")
 	public String token;
 
 	@Value("${wx_appid}")

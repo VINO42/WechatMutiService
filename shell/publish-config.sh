@@ -1,0 +1,11 @@
+#!/bin/sh
+CLASS_PATH=classes:`echo lib/*.jar | tr ' ' ':'`
+JAVA_OPTS=$JAVA_OPTS
+# 启动java组件 zookeeper？ 这个得是已经写好的调用
+JAVA_CMD="java $JAVA_OPTS -cp $CLASS_PATH com.newnew.wechatservice.support.zk.ZkConfigPublisher"
+# 屏幕打印Trying to start publish zk configs using below command:
+echo Trying to start publish zk configs using below command:
+#  屏幕打印JAVA_CMD
+echo $JAVA_CMD
+# 执行上面组合出来JAVA_CMD命令
+eval $JAVA_CMD
