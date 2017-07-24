@@ -1,8 +1,11 @@
 package com.newnew.wechatservice.support.service.impl;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.newnew.wechatservice.support.RedisClient;
 import com.newnew.wechatservice.support.WXServiceHandler;
 import com.newnew.wechatservice.support.anotation.WX;
 import com.newnew.wechatservice.support.config.WxConfig;
@@ -25,8 +28,8 @@ import com.newnew.wechatservice.support.service.BaseWxService;
  *
  */
 @Service("xXWxService")
-@WX("123")
-public class XXWxService  extends BaseWxService implements WXServiceHandler {
+@WX("1")
+public class XXWxService extends BaseWxService implements WXServiceHandler {
 	@Autowired
 	private WxXxConfig wxConfig;
 
@@ -44,6 +47,17 @@ public class XXWxService  extends BaseWxService implements WXServiceHandler {
 
 	@Autowired
 	private Gzh1SubscribeHandler subscribeHandler;
+
+	@Resource
+	private RedisClient redisClient;
+	
+	public RedisClient getRedisClient() {
+		return redisClient;
+	}
+
+	public void setRedisClient(RedisClient redisClient) {
+		this.redisClient = redisClient;
+	}
 
 	@Override
 	protected WxConfig getServerConfig() {

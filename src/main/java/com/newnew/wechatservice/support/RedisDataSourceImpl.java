@@ -12,6 +12,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
+	
 @Component("redisDataSource")
 public class RedisDataSourceImpl implements RedisDataSource {
 	private static final Logger log = LoggerFactory.getLogger(RedisDataSourceImpl.class);

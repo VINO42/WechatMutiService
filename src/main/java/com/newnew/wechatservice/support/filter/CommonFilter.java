@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
+import com.alibaba.fastjson.JSON;
 import com.newnew.wechatservice.support.dto.Constant;
 import com.newnew.wechatservice.support.zk.DynamicPropertiesHelper;
 import com.newnew.wechatservice.support.zk.DynamicPropertiesHelperFactory;
@@ -38,9 +40,9 @@ public class CommonFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		String appid = request.getParameter(Constant.APPID);
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
+		String appid = req.getParameter(Constant.APPID);
 
 		ServletContext sc = req.getSession().getServletContext();
 		XmlWebApplicationContext cxt = (XmlWebApplicationContext) WebApplicationContextUtils
@@ -48,13 +50,16 @@ public class CommonFilter implements Filter {
 		ZkClient zkClient = (ZkClient) cxt.getBean("zkClient");
 		DynamicPropertiesHelperFactory helperFac = cxt.getBean(DynamicPropertiesHelperFactory.class);
 		DynamicPropertiesHelper helper = helperFac.getHelper(Constant.CONF_FILE_NAME);
+		String jsonData = null;
 		List<String> appids = null;
 		if (zkClient.exists(Constant.ZK_TEMP_PATH)) {
-			appids = zkClient.readData(Constant.ZK_TEMP_PATH);
+			jsonData = zkClient.readData(Constant.ZK_TEMP_PATH);
 		}
-		if (appids == null || appids.size() == 0) {
+		if (StringUtils.isBlank(jsonData)) {
 			String appid2 = helper.getProperty(Constant.APPID);
 			appids = Arrays.asList(appid2);
+		} else {
+			appids = JSON.parseArray(jsonData, String.class);
 		}
 		if (!appids.contains(appid)) {
 			return;

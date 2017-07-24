@@ -10,8 +10,9 @@ import org.springframework.stereotype.Service;
 
 import me.chanjar.weixin.common.bean.WxAccessToken;
 import me.chanjar.weixin.common.util.ToStringUtils;
-import me.chanjar.weixin.common.util.http.ApacheHttpClientBuilder;
+import me.chanjar.weixin.common.util.http.apache.ApacheHttpClientBuilder;
 import me.chanjar.weixin.mp.api.WxMpConfigStorage;
+import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
 
 /**
  * 
@@ -19,7 +20,6 @@ import me.chanjar.weixin.mp.api.WxMpConfigStorage;
  * @author Andreby
  * @date 2017年6月17日 下午10:49:29
  */
-@Service
 public class CustomWxMpInRedisConfigStorage implements WxMpConfigStorage {
 	private final static String ACCESS_TOKEN_KEY = "wechat_access_token_";
 
@@ -52,8 +52,11 @@ public class CustomWxMpInRedisConfigStorage implements WxMpConfigStorage {
 	protected Lock cardApiTicketLock = new ReentrantLock();
 	protected volatile ApacheHttpClientBuilder apacheHttpClientBuilder;
 
-	@Resource
-	protected RedisClient redisClient;
+	private RedisClient redisClient;
+
+	public void setRedisClient(RedisClient redisClient) {
+		this.redisClient = redisClient;
+	}
 
 	@Override
 	public String getAccessToken() {

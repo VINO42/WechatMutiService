@@ -1,13 +1,13 @@
 package com.newnew.wechatservice.support.service;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.newnew.wechatservice.support.CustomWxMpInRedisConfigStorage;
+import com.newnew.wechatservice.support.RedisClient;
 import com.newnew.wechatservice.support.WXServiceHandler;
 import com.newnew.wechatservice.support.config.WxConfig;
 import com.newnew.wechatservice.support.handler.AbstractHandler;
@@ -21,12 +21,12 @@ import com.newnew.wechatservice.support.handler.SubscribeHandler;
 import com.newnew.wechatservice.support.handler.UnsubscribeHandler;
 
 import me.chanjar.weixin.common.api.WxConsts;
-import me.chanjar.weixin.mp.api.WxMpInRedisConfigStorage;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.bean.kefu.result.WxMpKfOnlineList;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.chanjar.weixin.mp.constant.WxMpEventConstants;
 
 /**
  * 
@@ -64,14 +64,23 @@ public abstract class BaseWxService  extends WxMpServiceImpl implements WXServic
 	protected abstract MsgHandler getMsgHandler();
 
 	protected abstract AbstractHandler getScanHandler();
+	
+	protected RedisClient redisClient;
 
-	@Resource
-	CustomWxMpInRedisConfigStorage customWxMpInRedisConfigStorage;
+
+	public RedisClient getRedisClient() {
+		return redisClient;
+	}
+
+	public void setRedisClient(RedisClient redisClient) {
+		this.redisClient = redisClient;
+	}
 
 	@PostConstruct
 	public void init() {
-		final WxMpInRedisConfigStorage config = new WxMpInRedisConfigStorage();
+		final CustomWxMpInRedisConfigStorage config = new CustomWxMpInRedisConfigStorage();
 		// redis进行set
+		config.setRedisClient(this.getRedisClient());
 		config.setAppId(this.getServerConfig().getAppid());// 设置微信公众号的appid
 		config.setSecret(this.getServerConfig().getAppsecret());// 设置微信公众号的app
 		config.setToken(this.getServerConfig().getToken());// 设置微信公众号的token
@@ -89,15 +98,15 @@ public abstract class BaseWxService  extends WxMpServiceImpl implements WXServic
 		newRouter.rule().handler(this.logHandler).next();
 
 		// 接收客服会话管理事件
-		newRouter.rule().async(false).msgType(WxConsts.XML_MSG_EVENT).event(WxConsts.EVT_KF_CREATE_SESSION)
+		newRouter.rule().async(false).msgType(WxConsts.XML_MSG_EVENT).event(WxMpEventConstants.CustomerService.KF_CREATE_SESSION)
 				.handler(this.kfSessionHandler).end();
-		newRouter.rule().async(false).msgType(WxConsts.XML_MSG_EVENT).event(WxConsts.EVT_KF_CLOSE_SESSION)
+		newRouter.rule().async(false).msgType(WxConsts.XML_MSG_EVENT).event(WxMpEventConstants.CustomerService.KF_CLOSE_SESSION)
 				.handler(this.kfSessionHandler).end();
-		newRouter.rule().async(false).msgType(WxConsts.XML_MSG_EVENT).event(WxConsts.EVT_KF_SWITCH_SESSION)
+		newRouter.rule().async(false).msgType(WxConsts.XML_MSG_EVENT).event(WxMpEventConstants.CustomerService.KF_SWITCH_SESSION)
 				.handler(this.kfSessionHandler).end();
 
 		// 门店审核事件
-		newRouter.rule().async(false).msgType(WxConsts.XML_MSG_EVENT).event(WxConsts.EVT_POI_CHECK_NOTIFY)
+		newRouter.rule().async(false).msgType(WxConsts.XML_MSG_EVENT).event(WxConsts.XML_MSG_EVENT)
 				.handler(this.storeCheckNotifyHandler).end();
 
 		// 自定义菜单事件

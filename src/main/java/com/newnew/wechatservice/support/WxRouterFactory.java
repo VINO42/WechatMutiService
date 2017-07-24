@@ -24,11 +24,6 @@ public class WxRouterFactory {
 		init();
 	}
 
-	public WXServiceHandler createServiceHandler(String appid) {
-		WXServiceHandler wxServiceHandler = null;
-		return wxServiceHandler;
-	}
-
 	private WxRouterFactory init() {
 		wXServiceHandlerList = new ArrayList();
 		File[] resources = getResources();// 获取到包下所有的class文件
@@ -63,7 +58,7 @@ public class WxRouterFactory {
 		return this;
 	}
 
-	public static WXServiceHandler createSendOrderAndQueryResponseAction(String appid) {
+	public static WXServiceHandler createServiceHandler(String appid) {
 		WXServiceHandler wXServiceHandler = null;
 		for (Class<? extends WXServiceHandler> claz : wXServiceHandlerList) {
 			Annotation annotation = handleAnnotation(claz);
@@ -115,5 +110,12 @@ public class WxRouterFactory {
 				String.valueOf(newChar), 1);
 		return simpleName;
 	}
+    public static WxRouterFactory getInstance() {
+        return ResponseActionFactoryInstance.instance;
+    }
 
+    private static class ResponseActionFactoryInstance {
+
+        private static WxRouterFactory instance = new WxRouterFactory();
+    }
 }

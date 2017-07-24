@@ -7,6 +7,7 @@ package com.newnew.wechatservice.support.dto;
  * @date 2017年7月20日 下午8:20:55
  */
 public class Constant {
+	public final static int REDIS_DB_INDEX = 14;
 	/**
 	 * 默认编码
 	 */
