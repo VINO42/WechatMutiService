@@ -14,4 +14,4 @@ echo $JAVA_CMD
 eval $JAVA_CMD
 
 #命令全路径 在classes的上层目录进行使用
-#java  -cp classes:`echo lib/*.jar | tr ' ' ':'` com.newnew.wechatservice.support.zk.ZkConfigSaver ${1:-tmp}
+#java  -cp classes:`echo lib/*.jar | tr ' ' ':'` com.xyz.wechatservice.support.zk.ZkConfigSaver ${1:-tmp}

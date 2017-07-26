@@ -1,0 +1,40 @@
+package com.xyz.wechatservice.support.handler;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import com.xyz.wechatservice.support.config.WxConfig;
+
+import me.chanjar.weixin.common.session.WxSessionManager;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+
+/**
+ * 
+ * @author Binary Wang
+ *
+ */
+@Component
+public class NullHandler extends AbstractHandler {
+	private WxConfig wxConfig;
+
+	@Override
+	public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage, Map<String, Object> context, WxMpService wxMpService,
+			WxSessionManager sessionManager) {
+		return null;
+	}
+
+	@Override
+	protected WxConfig getWxConfig() {
+		return wxConfig;
+	}
+
+	@Override
+	public NullHandler setWxConfig(WxConfig wxConfig) {
+		this.wxConfig = wxConfig;
+		return this;
+	}
+
+}

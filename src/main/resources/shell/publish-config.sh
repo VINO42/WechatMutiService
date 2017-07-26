@@ -12,4 +12,4 @@ echo $JAVA_CMD
 # 执行上面组合出来JAVA_CMD命令
 eval $JAVA_CMD
 #命令全路径 在classes的上层目录进行使用
-#java  -cp  classes:`echo lib/*.jar | tr ' ' ':'` com.newnew.wechatservice.support.zk.ZkConfigPublisher
+#java  -cp  classes:`echo lib/*.jar | tr ' ' ':'` com.xyz.wechatservice.support.zk.ZkConfigPublisher

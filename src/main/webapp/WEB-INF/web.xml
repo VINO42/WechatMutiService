@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
-	<display-name>WechatMutiService</display-name>
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
 	<display-name>WechatMutiService</display-name>
 	<context-param>
 		<param-name>webAppRootKey</param-name>
@@ -13,6 +12,13 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:spring/applicationContext.xml</param-value>
 	</context-param>
+	<context-param>
+		<param-name>log4jContextName</param-name>
+		<param-value>WechatMutiService</param-value>
+	</context-param>
+	<!-- <filter> <filter-name>commonFilter</filter-name> <filter-class>com.newnew.wechatservice.support.filter.CommonFilter</filter-class> 
+		</filter> <filter-mapping> <filter-name>commonFilter</filter-name> <url-pattern>/*</url-pattern> 
+		</filter-mapping> -->
 	<filter>
 		<filter-name>encodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -25,24 +31,20 @@
 			<param-value>true</param-value>
 		</init-param>
 	</filter>
-	<filter>
-		<filter-name>appidFilter</filter-name>
-		<filter-class>com.newnew.wechatservice.support.filter.CommonFilter</filter-class>
-	</filter>
 	<filter-mapping>
 		<filter-name>encodingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>appidFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<listener>
 		<listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
 	</listener>
 	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+
 	<listener>
 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
 	</listener>

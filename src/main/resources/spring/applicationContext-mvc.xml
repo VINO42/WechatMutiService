@@ -7,7 +7,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
-	<context:component-scan base-package="com.newnew.wechatservice.web">
+	<context:component-scan base-package="com.xyz.wechatservice.web">
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />
 		<context:include-filter type="annotation"
@@ -40,7 +40,12 @@
 			</bean>
 		</mvc:message-converters>
 	</mvc:annotation-driven>
-
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="com.xyz.wechatservice.support.interceptor.AppidInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
 
 
 	<!-- 定义跳转的文件的前后缀 ，视图模式配置 -->
@@ -87,13 +92,13 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean id="jsonConverter"
 		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 		<property name="supportedMediaTypes" value="application/json" />
 	</bean>
-	
-		<mvc:annotation-driven>
+
+	<mvc:annotation-driven>
 		<mvc:message-converters>
 			<ref bean="jsonConverter" />
 			<ref bean="stringHttpMessageConverter" />

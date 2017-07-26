@@ -3,7 +3,7 @@
 	: Log4j能够自动检测修改配置文件和重新配置本身, 设置间隔秒数。 -->
 <configuration status="off" monitorInterval="600">
 	<properties>
-		<property name="LOG_HOME">./logs</property>
+		<property name="LOG_HOME">logs</property>
 		<!-- 日志备份目录 -->
 		<property name="tyLog">tyLog</property>
 		<property name="customLog">customLog</property>

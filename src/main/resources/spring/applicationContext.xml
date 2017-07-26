@@ -9,13 +9,13 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 	<import resource="classpath*:applicationContext-mvc.xml" />
-		<import resource="classpath:spring/zkpublisher.application.xml" />
+	<import resource="classpath:spring/zkpublisher.application.xml" />
+
 	<!-- 启用注解 -->
 	<context:annotation-config />
-	<util:properties id="common" location="classpath:/common/common-appid.properties"></util:properties>
 	<context:property-placeholder location="classpath:/properties/*.properties" />
 	<!-- 启动组件扫描，排除@Controller组件，该组件由SpringMVC配置文件扫描 -->
-	<context:component-scan base-package="com.newnew.wechatservice">
+	<context:component-scan base-package="com.xyz.wechatservice">
 		<context:exclude-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />
 		<context:exclude-filter type="annotation"
@@ -43,5 +43,11 @@
 		<constructor-arg index="3" value="${redis.timeout}"
 			type="int" />
 		<constructor-arg index="4" value="${redis.password}" />
+	</bean>
+	<bean id="redisDataSource" class="com.xyz.wechatservice.support.RedisDataSourceImpl">
+		<property name="jedisPool" ref="jedisPool"></property>
+	</bean>
+	<bean id="redisClient" class="com.xyz.wechatservice.support.RedisClientImpl">
+		<property name="redisDataSource" ref="redisDataSource"></property>
 	</bean>
 </beans>

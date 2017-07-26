@@ -21,7 +21,7 @@
 			<property name="ignoreUnresolvablePlaceholders" value="true" />
 			<property name="location" value="classpath:/properties/zkpublisher.properties" />
 		</bean>
-	<bean id="zkSerializer" class="com.newnew.wechatservice.support.zk.ZkUtils.StringSerializer">
+	<bean id="zkSerializer" class="com.xyz.wechatservice.support.zk.ZkUtils.StringSerializer">
 		<constructor-arg value="${ZK_CONF_ENCODING}" />
 	</bean>
 
@@ -31,12 +31,12 @@
 		<property name="zkSerializer" ref="zkSerializer"></property>
 	</bean>
 
-	<bean id="configChangeSubscriber" class="com.newnew.wechatservice.support.zk.ZkConfigChangeSubscriberImpl">
+	<bean id="configChangeSubscriber" class="com.xyz.wechatservice.support.zk.ZkConfigChangeSubscriberImpl">
 		<constructor-arg ref="zkClient"></constructor-arg>
 		<constructor-arg value="${ZK_CONFIG_ROOTNODE}"></constructor-arg>
 	</bean>
 
-	<bean id="helperFactory" class="com.newnew.wechatservice.support.zk.DynamicPropertiesHelperFactory">
+	<bean id="helperFactory" class="com.xyz.wechatservice.support.zk.DynamicPropertiesHelperFactory">
 		<constructor-arg ref="configChangeSubscriber"></constructor-arg>
 	</bean>
 
