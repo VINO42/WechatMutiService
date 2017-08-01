@@ -10,6 +10,6 @@
         * 必要参数:wx_appid,wx_appsecret
 * 首次部署 common-appid.properties appids 必填
 * 当添加新号时候在 tomcat根目录 下创建 common 文件夹,将新号的配置文件放入 common
-* WEB_INFO 下执行 脚本 publish 命令java -cp classes:echo lib/*.jar | tr ' ' ':'
-* 在 WEB_INFO 下再执行 dowloadjava -cp classes:echo lib/*.jar | tr ' ' ':' com.newnew.wechatservice.support.zk.ZkConfigSaver "/common"
+* WEB_INFO 下执行 脚本 publish命令:java -cp classes:echo lib/*.jar | tr ' ' ':'
+* 在 WEB_INFO 下再执行 dowload命令:java -cp classes:echo lib/*.jar | tr ' ' ':' com.newnew.wechatservice.support.zk.ZkConfigSaver "/common"
 ##TODO:扩展dubbo
