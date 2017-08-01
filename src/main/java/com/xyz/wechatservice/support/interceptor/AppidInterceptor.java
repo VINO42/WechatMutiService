@@ -32,8 +32,8 @@ public class AppidInterceptor implements HandlerInterceptor {
 		NativeWebRequest webRequest = new ServletWebRequest(request);
 		Map<String, String> uriTemplateVars = (Map<String, String>) webRequest
 				.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
-		String appid = uriTemplateVars.get(Constant.APPID);
-		if (StringUtils.isBlank(appid)) {
+		String appidMd5 = uriTemplateVars.get(Constant.APPID);
+		if (StringUtils.isBlank(appidMd5)) {
 			return false;
 		}
 		ServletContext sc = request.getSession().getServletContext();
@@ -49,7 +49,7 @@ public class AppidInterceptor implements HandlerInterceptor {
 		} else {
 			appids = JSON.parseArray(jsonData, String.class);
 		}
-		if (!appids.contains(appid)) {
+		if (!appids.contains(appidMd5)) {
 			return false;
 		} else {
 			return true;

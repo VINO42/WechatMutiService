@@ -95,7 +95,7 @@ public class Constant {
 
 	public static final String APPID_PROPERTIES_SUFFIX = ".properties";
 
-	public static final String WEB_SUF_PATH = "/WEB-INF/classes/common";
+	public static final String WEB_SUF_PATH = "/WEB-INF/classes";
 	
 	public static final String COMMON_APPID_PATH = "/common/common-appid.properties";
 }

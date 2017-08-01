@@ -17,6 +17,7 @@ import com.xyz.wechatservice.support.ApplicationContextUtil;
 import com.xyz.wechatservice.support.RedisClient;
 import com.xyz.wechatservice.support.config.CommonWxConfig;
 import com.xyz.wechatservice.support.dto.Constant;
+import com.xyz.wechatservice.support.util.CommonUtils;
 
 /**
  * 动态配置文件辅助类
@@ -52,7 +53,8 @@ public class DynamicPropertiesHelper {
 			setValue((String) propEn.getKey(), (String) propEn.getValue());
 		}
 		RedisClient client = (RedisClient) ApplicationContextUtil.getBean(RedisClient.class);
-		client.set(wxConfig.getAppid(), JSON.toJSONString(wxConfig), Constant.REDIS_DB_INDEX);
+		 String key = CommonUtils.md5(wxConfig.getAppid());
+		client.set(key, JSON.toJSONString(wxConfig), Constant.REDIS_DB_INDEX);
 	}
 
 	private CommonWxConfig setToRedis(String key, String value, CommonWxConfig wxConfig) {

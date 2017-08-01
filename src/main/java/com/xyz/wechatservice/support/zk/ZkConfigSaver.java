@@ -20,6 +20,7 @@ import com.xyz.wechatservice.support.RedisClient;
 import com.xyz.wechatservice.support.config.CommonWxConfig;
 import com.xyz.wechatservice.support.config.WxConfig;
 import com.xyz.wechatservice.support.dto.Constant;
+import com.xyz.wechatservice.support.util.CommonUtils;
 
 /**
  * zk配置文件下载类
@@ -44,7 +45,6 @@ public class ZkConfigSaver {
 		this.helperFactory = helperFactory;
 	}
 
-	@SuppressWarnings("unused")
 	private static final void loadProperties() {
 		InputStream is = ZkConfigPublisher.class.getResourceAsStream(Constant.ZK_CONFIG_PATH);
 		if (is == null) {
@@ -64,6 +64,7 @@ public class ZkConfigSaver {
 		ZK_ADDRESS = props.getProperty("ZK_ADDRESS");
 	}
 
+	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		if ((args == null) || (args.length < 1)) {
 			throw new RuntimeException("需要指定输出目录名");
@@ -86,6 +87,7 @@ public class ZkConfigSaver {
 		logger.info("rootPath 为:::::" + rootPath);
 		String sufPath = Constant.WEB_SUF_PATH;
 		String path = rootPath + sufPath;
+		path = path + args[0];
 		File confDir = new File(path);
 
 		if (!confDir.exists()) {
@@ -129,7 +131,8 @@ public class ZkConfigSaver {
 					wxConfig.setAppid(appid);
 					wxConfig.setAppsecret(secret);
 					wxConfig.setToken(token);
-					redis.set(appid, JSON.toJSONString(wxConfig), Constant.REDIS_DB_INDEX);
+					String key = CommonUtils.md5(appid);
+					redis.set(key, JSON.toJSONString(wxConfig), Constant.REDIS_DB_INDEX);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
