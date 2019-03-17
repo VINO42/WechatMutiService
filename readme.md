@@ -1,6 +1,6 @@
-##WechatMutiService
+## WechatMutiService
   支持多公众号的一个javaWeb工程
-##使用说明
+## 使用说明
  Controller 入参必要参数为md5(appid)
 
 * 必要文件
